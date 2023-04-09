@@ -11,10 +11,12 @@ class ParkingSpace:
     isParkingSpaceIncludedInPrice: bool
     parkingSpacePrice: float
 
+
 @dataclass
 class DetailedType:
     typology: str
     subtipology: str
+
 
 @dataclass
 class Property:
@@ -24,35 +26,44 @@ class Property:
     distance: str
     district: str
     exterior: bool
-    floor: str
     hasVideo: bool
     latitude: float
     longitude: float
     municipality: str
     neighborhood: str
     numPhotos: int
-    operation:  Operation
-    price: int
-    propertyCode: int
+    operation: Operation
+    price: float
+    propertyCode: str
     province: str
-    region: str
     rooms: int
     showAddress: bool
-    size: int
-    subregion: str
+    size: float
     thumbnail: str
     url: str
     status: Status
     newDevelopment: bool
-    tenantGender: str
-    garageType: str
-    parkingSpace: ParkingSpace
-    hasLift: bool
-    newDevelopmentFinished: bool
-    isSmokingAllowed: bool
     priceByArea: float
     detailedType: DetailedType
-    externalReference: str
+    hasPlan: bool
+    propertyType: dict | str
+    detailedType: dict
+    description: str
+    suggestedTexts: dict
+    has3DTour: bool
+    has360: bool
+    hasStaging: bool
+    topNewDevelopment: bool
+    superTopHighlight: bool
+    externalReference: str = None
+    floor: str = None
+    hasLift: bool = None
+    tenantGender: str = None
+    garageType: str = None
+    hasLift: bool = None
+    newDevelopmentFinished: bool = None
+    isSmokingAllowed: bool = None
+
 
 @dataclass
 class SearchPage:
@@ -66,4 +77,4 @@ class SearchPage:
     upperRangePosition: int
     elementList: List[Property]
     numPaginations: int
-    alertName:str
+    alertName: str

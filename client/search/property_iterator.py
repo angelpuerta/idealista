@@ -1,8 +1,13 @@
 from typing import Iterator, Callable
 
+import dacite
+
+from client.search.enum.operation import Operation
+from client.search.enum.property_type import PropertyType
+from client.search.enum.status import Status
 from client.search.search_error import SearchError
 from client.search.search_request import SearchRequest
-from client.search.search_result import SearchPage, Property
+from client.search.search_result import SearchPage, Property, DetailedType
 
 
 class PropertyIter:
@@ -36,7 +41,10 @@ class PropertyIter:
         if not next_property:
             raise ValueError("Impossible path has been reached")
         self._count = self._count + 1
-        return next_property
+        return dacite.from_dict(data_class=Property, data=next_property,
+                                config=dacite.Config(
+                                    type_hooks={Operation: Operation, DetailedType: DetailedType, Status: Status,
+                                                PropertyType: PropertyType}))
 
     def _limit_reached(self):
         return self._limit and self._count + 1 >= self._limit

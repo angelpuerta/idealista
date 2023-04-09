@@ -25,8 +25,8 @@ class StoreService:
         properties_fields = list(map(lambda x: x.name, fields(Property))) + ['created']
         path = self.path.joinpath(store.output)
         mode = 'a' if path.is_file() else 'w'
-        with open(path, mode) as file:
-            writer = csv.DictWriter(file, delimiter=',', fieldnames=properties_fields)
+        with open(path, mode, encoding='utf-8', newline="") as file:
+            writer = csv.DictWriter(file, delimiter='\t', fieldnames=properties_fields)
 
             if mode == 'w':
                 writer.writeheader()
@@ -37,9 +37,10 @@ class StoreService:
 
     def csv_remove_duplicates(self, store: Store):
         path = self.path.joinpath(store.output)
-        df = pd.read_csv(path)
-        merged_df = df.sort_values('created').groupby('propertyCode').first()
-        merged_df.to_csv(path, index=False)
+        df = pd.read_csv(path, delimiter='\t', encoding='utf-8', on_bad_lines='skip')
+        if not df.empty:
+            merged_df = df.sort_values('created').groupby('propertyCode').first()
+            merged_df.to_csv(path, index=False)
 
     @property
     def store_functions(self):

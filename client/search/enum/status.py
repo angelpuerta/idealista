@@ -5,3 +5,4 @@ from enum import Enum
 class Status(Enum):
     GOOD = "good"
     RENEW = "renew"
+    NEW_DEVELOPMENT = "newdevelopment"

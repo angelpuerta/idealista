@@ -3,6 +3,7 @@ import logging
 
 import requests
 
+from .exceeded_request import ExceededRequest
 from .property_iterator import PropertyIter
 from .search_error import SearchError
 from .search_request import SearchRequest
@@ -25,7 +26,7 @@ class SearchService:
         property = PropertyIter(search_request, self._get_page, limit)
         return property
 
-    def _get_page(self, search_request: SearchRequest) -> SearchPage | SearchError:
+    def _get_page(self, search_request: SearchRequest) -> SearchPage | SearchError | ExceededRequest:
         country_url = f'{self.uri}/{search_request.country}/search'
         logging.debug(search_request)
         response = requests.post(country_url, headers=self._auth_header(), params=search_request.params)
@@ -33,6 +34,8 @@ class SearchService:
             page = SearchPage(**response.json())
             logging.debug(page)
             return page
+        if response.status_code == 429:
+            return ExceededRequest()
         error = SearchError(response.status_code, response.json()['message'])
         logging.error(error)
         return error
