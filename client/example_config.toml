@@ -1,0 +1,7 @@
+[credentials]
+apiKey = "XXXXXXXXXXXXXXXXX"
+secret = "XXXXXXXXXX"
+
+[api]
+url = "https://api.idealista.com"
+version = "3.5"

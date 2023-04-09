@@ -1,0 +1,7 @@
+[credentials]
+apiKey = "fbxamwtoct0aoxgqk6hamwj38efx6rft"
+secret = "SFNa5qWRtDUA"
+
+[api]
+url = "https://api.idealista.com"
+version = "3.5"

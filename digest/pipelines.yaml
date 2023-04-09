@@ -1,0 +1,40 @@
+pipelines:
+  - name: "Export_rents_to_csv"
+    search:
+      query:
+        country: 'es'
+        operation: 'sale'
+        propertyType: 'homes'
+        locale: 'es'
+      geoQuery:
+        city: 'Madrid'
+        distance: 5000
+      filters:
+        minSize: 30
+        minPrice: 100000
+        maxPrice: 280000
+        sinceDate: 'W'
+      limit: 100
+    store:
+      type: "csv"
+      output: "./output/sales.csv"
+
+  - name: "Export_sales_to_csv"
+    search:
+      query:
+        country: 'es'
+        operation: 'rent'
+        propertyType: 'homes'
+        locale: 'es'
+      geoQuery:
+        city: 'Madrid'
+        distance: 5000
+      filters:
+        minSize: 30
+        minPrice: 400
+        maxPrice: 1500
+        sinceDate: 'W'
+      limit: 100
+    store :
+      type: "csv"
+      output: "./output/rents.csv"
