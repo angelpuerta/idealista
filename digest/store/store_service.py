@@ -21,7 +21,7 @@ class StoreService:
         store = pipeline.store
         self.store_functions[store.type](store, iterator)
 
-    def store_csv(self, store: Store, iterator: Iterator[Property]):
+    def store_tsv(self, store: Store, iterator: Iterator[Property]):
         properties_fields = list(map(lambda x: x.name, fields(Property))) + ['created']
         path = self.path.joinpath(store.output)
         mode = 'a' if path.is_file() else 'w'
@@ -33,9 +33,9 @@ class StoreService:
 
             for property in iterator:
                 writer.writerow(to_dict(property) | {'created': datetime.now()})
-        self.csv_remove_duplicates(store)
+        self.tsv_remove_duplicates(store)
 
-    def csv_remove_duplicates(self, store: Store):
+    def tsv_remove_duplicates(self, store: Store):
         path = self.path.joinpath(store.output)
         df = pd.read_csv(path, delimiter='\t', encoding='utf-8', on_bad_lines='skip')
         if not df.empty:
@@ -45,7 +45,7 @@ class StoreService:
     @property
     def store_functions(self):
         return {
-            StoreType.CSV: self.store_csv
+            StoreType.TSV: self.store_tsv
         }
 
 

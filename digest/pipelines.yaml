@@ -14,10 +14,10 @@ pipelines:
         minPrice: 100000
         maxPrice: 280000
         sinceDate: 'W'
-      limit: 100
+      limit: 50
     store:
-      type: "csv"
-      output: "./output/sales.csv"
+      type: "tsv"
+      output: "./output/sales.tsv"
 
   - name: "Export_sales_to_csv"
     search:
@@ -34,7 +34,7 @@ pipelines:
         minPrice: 400
         maxPrice: 1500
         sinceDate: 'W'
-      limit: 100
+      limit: 50
     store :
-      type: "csv"
-      output: "./output/rents.csv"
+      type: "tsv"
+      output: "./output/rents.tsv"
