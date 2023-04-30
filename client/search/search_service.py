@@ -23,8 +23,7 @@ class SearchService:
         return self._get_page(search_request)
 
     def query_iterator(self, search_request: SearchRequest, limit: int = None) -> PropertyIter:
-        property = PropertyIter(search_request, self._get_page, limit)
-        return property
+        return PropertyIter(search_request, self._get_page, limit)
 
     def _get_page(self, search_request: SearchRequest) -> SearchPage | SearchError | ExceededRequest:
         country_url = f'{self.uri}/{search_request.country}/search'

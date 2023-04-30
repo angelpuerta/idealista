@@ -1,5 +1,5 @@
 pipelines:
-  - name: "Export_rents_to_csv"
+  - name: "Export_sales_to_csv"
     search:
       query:
         country: 'es'
@@ -17,9 +17,9 @@ pipelines:
       limit: 50
     store:
       type: "tsv"
-      output: "./output/sales.tsv"
+      output: "../output/sales"
 
-  - name: "Export_sales_to_csv"
+  - name: "Export_rents_to_csv"
     search:
       query:
         country: 'es'
@@ -37,4 +37,4 @@ pipelines:
       limit: 50
     store :
       type: "tsv"
-      output: "./output/rents.tsv"
+      output: "../output/rents"

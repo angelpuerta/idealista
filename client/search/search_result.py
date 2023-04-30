@@ -39,7 +39,6 @@ class Property:
     rooms: int
     showAddress: bool
     size: float
-    thumbnail: str
     url: str
     status: Status
     newDevelopment: bool
@@ -48,13 +47,14 @@ class Property:
     hasPlan: bool
     propertyType: dict | str
     detailedType: dict
-    description: str
     suggestedTexts: dict
     has3DTour: bool
     has360: bool
     hasStaging: bool
     topNewDevelopment: bool
     superTopHighlight: bool
+    description: str = ""
+    thumbnail: str = ""
     externalReference: str = None
     floor: str = None
     hasLift: bool = None
@@ -66,7 +66,7 @@ class Property:
 
 
 @dataclass
-class SearchPage:
+class SearchPage():
     actualPage: int
     itemsPerPage: int
     lowerRangePosition: int
@@ -78,3 +78,4 @@ class SearchPage:
     elementList: List[Property]
     numPaginations: int
     alertName: str
+    totalAppliedFilters: int
