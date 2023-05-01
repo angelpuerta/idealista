@@ -12,6 +12,12 @@ from utils.decorator import singleton
 from utils.utils import to_dict
 
 
+def purge_strings(dictionary):
+    for key, value in dictionary.items():
+        if isinstance(value, str):
+            dictionary[key] = value.replace('\n', ' ').replace('\t', ' ')
+    return dictionary
+
 def time_stamp(pipeline: Pipeline) -> str:
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     return f'{pipeline.name}_{timestamp}'
@@ -38,7 +44,8 @@ class StoreService:
             writer.writeheader()
 
             for estate in iterator:
-                writer.writerow(estate.__dict__ | {'created': datetime.now()})
+                estate = purge_strings(estate.__dict__)
+                writer.writerow(estate | {'created': datetime.now()})
 
     @property
     def store_functions(self):

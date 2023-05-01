@@ -13,28 +13,41 @@ from client.search.enum.property_type import PropertyType
 from client.search.query.geo_query import GeoQuery
 from client.search.query.search_query import SearchQuery
 from digest.pipeline.pipeline import Pipeline
+from digest.run.command import Command
 from digest.store.store import Store
 from digest.store.store_type import StoreType
 
 
 def map_pipeline(yaml_definition: dict) -> Pipeline:
     name = yaml_definition['name']
-    search = yaml_definition['search']
-    query = search['query']
-    geo_query = search['geoQuery']
-    filters = search['filters']
-    store = yaml_definition['store']
-    limit = search['limit']
+    search, store, run, query, geo_query = None, None, None, None, None
+    limit = 0
+    filters = {}
+    if 'search' in yaml_definition:
+        search = yaml_definition['search']
+        query = search['query']
+        geo_query = search['geoQuery']
+        filters = search['filters']
+        limit = search['limit']
+    if 'store' in yaml_definition:
+        store = yaml_definition['store']
+    if 'run' in yaml_definition:
+        run = yaml_definition['run']
 
-    if 'city' in geo_query:
+    if geo_query and 'city' in geo_query:
         geo_query = from_city(geo_query['city'], geo_query['distance'])
-    else:
+    elif search:
         geo_query = from_dict(data_class=GeoQuery, data=geo_query)
-    query = from_dict(data_class=SearchQuery, data=query,
-                      config=dacite.Config(type_hooks={Country: Country, Locale: Locale, Operation: Operation,
-                                                       PropertyType: PropertyType}))
-    store = from_dict(data_class=Store, data=store,
-                      config=dacite.Config(type_hooks={StoreType: StoreType}))
+
+    if query:
+        query = from_dict(data_class=SearchQuery, data=query,
+                          config=dacite.Config(type_hooks={Country: Country, Locale: Locale, Operation: Operation,
+                                                           PropertyType: PropertyType}))
+    if store:
+        store = from_dict(data_class=Store, data=store,
+                          config=dacite.Config(type_hooks={StoreType: StoreType}))
+    if run:
+        run = from_dict(data_class=Command, data=run)
 
     return from_dict(data_class=Pipeline,
                      data={
@@ -43,7 +56,8 @@ def map_pipeline(yaml_definition: dict) -> Pipeline:
                          'geo_query': geo_query,
                          'filters': filters,
                          'store': store,
-                         'limit': limit
+                         'limit': limit,
+                         'run': run
                      })
 
 
