@@ -8,12 +8,12 @@ pipelines:
         locale: 'es'
       geoQuery:
         city: 'Madrid'
-        distance: 5000
+        distance: 7500
       filters:
         minSize: 30
         minPrice: 100000
         maxPrice: 280000
-        sinceDate: 'W'
+        sinceDate: 'Y'
       limit: 50
     store:
       type: "tsv"
@@ -28,12 +28,12 @@ pipelines:
         locale: 'es'
       geoQuery:
         city: 'Madrid'
-        distance: 5000
+        distance: 7500
       filters:
         minSize: 30
         minPrice: 400
         maxPrice: 1500
-        sinceDate: 'W'
+        sinceDate: 'T'
       limit: 50
     store:
       type: "tsv"
