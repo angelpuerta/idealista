@@ -18,6 +18,7 @@ from digest.store.store import Store
 from digest.store.store_type import StoreType
 
 
+
 def map_pipeline(yaml_definition: dict) -> Pipeline:
     name = yaml_definition['name']
     search, store, run, query, geo_query = None, None, None, None, None

@@ -3,7 +3,9 @@ from pathlib import Path
 
 import pandas as pd
 
+import logging
 from digest.pipeline.pipeline import Pipeline
+from digest.run.store_drive import store_drive
 from utils.decorator import singleton
 
 
@@ -15,6 +17,7 @@ class RunService:
         self.run_functions[pipeline.run.function](pipeline.run.arg)
 
     def join_csv(self, path:str):
+        logging.info(f"Running join csv for {path}")
         path = self.path.joinpath(path)
         concatenated_data = pd.DataFrame()
 
@@ -28,12 +31,24 @@ class RunService:
         deduplicated_data = grouped_data.drop_duplicates(subset="propertyCode", inplace=False)
         output_file_path = os.path.join(path, "output.csv")
         deduplicated_data.to_csv(output_file_path, sep='\t', mode='w+', index=False)
+        logging.info(f"Completed join csv for {path}")
+
+    def store_drive(self, args: str):
+        logging.info(f"Running store drive for {args}")
+        args = args.split(" ")
+        from_path = args[0]
+        to_path = args[1]
+
+        store_drive(from_path, to_path)
+        logging.info(f"Completed store drive for {args}")
 
     @property
     def run_functions(self):
         return {
-            "join_csv": self.join_csv
+            "join_csv": self.join_csv,
+            "store_drive": self.store_drive
         }
+
 
 
 run_service = RunService()

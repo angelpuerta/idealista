@@ -59,6 +59,6 @@ class PropertyIter:
     def get_current_page(self):
         result = self._get_page(self._search_request)
         if not result:
-            raise Exception(result)
+            raise Exception(str(result))
         self._current_page = result
         self._propertyIterator = self._current_page.elementList.__iter__()

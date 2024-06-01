@@ -1,16 +1,17 @@
 import csv
+import logging
 import os
 from dataclasses import fields
 from datetime import datetime
 from pathlib import Path
 from typing import Iterator
 
+from client.search.exceeded_request import ExceededRequest
+from client.search.property_iterator import PropertyIter
 from client.search.search_result import Property
 from digest.pipeline.pipeline import Pipeline
 from digest.store.store_type import StoreType
 from utils.decorator import singleton
-from utils.utils import to_dict
-
 
 def purge_strings(dictionary):
     for key, value in dictionary.items():
@@ -27,11 +28,12 @@ def time_stamp(pipeline: Pipeline) -> str:
 class StoreService:
     path = Path(__file__).parent.parent
 
-    def store(self, pipeline: Pipeline, iterator: Iterator[Property]):
+    def store(self, pipeline: Pipeline, iterator: PropertyIter):
         store = pipeline.store
         self.store_functions[store.type](pipeline, iterator)
 
-    def store_tsv(self, pipeline:Pipeline, iterator: Iterator[Property]):
+    def store_tsv(self, pipeline:Pipeline, iterator: PropertyIter):
+        logging.info(f"Storing the pipeline {pipeline.name}")
         properties_fields = list(map(lambda x: x.name, fields(Property))) + ['created']
         path = self.path.joinpath(pipeline.store.output)
 
@@ -43,9 +45,15 @@ class StoreService:
             writer = csv.DictWriter(file, delimiter='\t', fieldnames=properties_fields)
             writer.writeheader()
 
-            for estate in iterator:
-                estate = purge_strings(estate.__dict__)
-                writer.writerow(estate | {'created': datetime.now()})
+            try:
+                for state in iterator:
+                    state = purge_strings(state.__dict__)
+                    writer.writerow(state | {'created': datetime.now()})
+                logging.info(f"Store complete for {pipeline.name}")
+            except StopIteration as e:
+                logging.warning(f"The limit for the query has been reached {e}")
+            except Exception as e:
+                logging.error(e)
 
     @property
     def store_functions(self):

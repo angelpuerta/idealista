@@ -1,5 +1,6 @@
 from typing import Iterator
 
+from client.search.property_iterator import PropertyIter
 from client.search.search_request import SearchRequest
 from client.search.search_result import Property
 from client.search.search_service import search_service
@@ -9,7 +10,7 @@ from utils.decorator import singleton
 
 @singleton
 class Search:
-    def query(self, pipeline: Pipeline) -> Iterator[Property]:
+    def query(self, pipeline: Pipeline) -> PropertyIter:
         request = SearchRequest(pipeline.query, pipeline.geo_query)
         request.add_filter(pipeline.filters)
         return search_service.query_iterator(request, pipeline.limit)

@@ -1,7 +1,8 @@
 from client.search.query.geo_query import GeoQuery
 from client.search.query.location_query import LocationQuery
 from client.search.query.search_query import SearchQuery
-from utils.utils import to_dict, map_values, parse_dict
+from utils.utils import to_dict, parse_dict
+import yaml
 
 
 class SearchRequest:
@@ -62,3 +63,6 @@ class SearchRequest:
 
     def next_page(self):
         return self._query.next_page()
+
+    def __str__(self):
+        return yaml.dump(self, sort_keys=True)

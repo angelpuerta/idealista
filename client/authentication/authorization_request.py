@@ -15,8 +15,8 @@ class AuthorizationRequest:
     scope = Scope.READ
 
     def __init__(self, api_key, secret):
-        base64Auth = base64.b64encode(f"{api_key}:{secret}".encode('ascii')).decode('ascii')
-        self.authorization = f"Basic {base64Auth}"
+        base64_auth = base64.b64encode(f"{api_key}:{secret}".encode('ascii')).decode('ascii')
+        self.authorization = f"Basic {base64_auth}"
 
     @property
     def headers(self):

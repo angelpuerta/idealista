@@ -11,10 +11,10 @@ pipelines:
         distance: 7500
       filters:
         minSize: 30
-        minPrice: 100000
-        maxPrice: 280000
-        sinceDate: 'Y'
-      limit: 50
+        minPrice: 80000
+        maxPrice: 300000
+        sinceDate: 'W'
+      limit: 750
     store:
       type: "tsv"
       output: "../output/sales"
@@ -32,9 +32,9 @@ pipelines:
       filters:
         minSize: 30
         minPrice: 400
-        maxPrice: 1500
-        sinceDate: 'T'
-      limit: 50
+        maxPrice: 2000
+        sinceDate: 'W'
+      limit: 750
     store:
       type: "tsv"
       output: "../output/rents"
@@ -46,3 +46,11 @@ pipelines:
     run:
       function: "join_csv"
       arg: "../output/rents"
+  - name: "Store_drive_sales"
+    run:
+      function: "store_drive"
+      arg: "../output/sales/output.csv 150LU2K7TxDPRnR52H6KSnj-B3w9iGZkn"
+  - name: "Store_drive_rents"
+    run:
+      function: "store_drive"
+      arg: "../output/rents/output.csv 1nyrAN4KZW73MSzj8eev3hDgE0KVkVHt7"

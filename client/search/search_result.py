@@ -25,7 +25,6 @@ class Property:
     country: str
     distance: str
     district: str
-    exterior: bool
     hasVideo: bool
     latitude: float
     longitude: float
@@ -37,30 +36,30 @@ class Property:
     propertyCode: str
     province: str
     rooms: int
-    showAddress: bool
+    priceByArea: float
+    detailedType: DetailedType
     size: float
     url: str
     status: Status
-    newDevelopment: bool
-    priceByArea: float
-    detailedType: DetailedType
-    hasPlan: bool
     propertyType: dict | str
     detailedType: dict
     suggestedTexts: dict
-    has3DTour: bool
-    has360: bool
-    hasStaging: bool
-    topNewDevelopment: bool
-    superTopHighlight: bool
+    showAddress: bool = False
+    newDevelopment: bool = False
+    hasPlan: bool = False
+    has3DTour: bool = False
+    has360: bool = False
+    hasStaging: bool = False
+    topNewDevelopment: bool = False
+    superTopHighlight: bool = False
     description: str = ""
     thumbnail: str = ""
+    exterior: bool = False
     externalReference: str = None
     floor: str = None
     hasLift: bool = None
     tenantGender: str = None
     garageType: str = None
-    hasLift: bool = None
     newDevelopmentFinished: bool = None
     isSmokingAllowed: bool = None
 
