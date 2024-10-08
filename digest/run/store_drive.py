@@ -27,6 +27,6 @@ def store_drive(file_path, drive_path):
     media = MediaFileUpload(os_path, mimetype='text/tab-separated-values', resumable=True)
 
     # Upload the file
-    file = service.files().update(body=file_metadata, media_body=media, fields='id').execute()
+    file = service.files().create(body=file_metadata, media_body=media, fields='id').execute()
 
     logging.info(f"File uploaded successfully. File ID: {file['id']}")

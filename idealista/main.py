@@ -1,7 +1,9 @@
 #!/bin/python
 import sys
+import time
 
 from digest.launcher import launch_all
+from anacron import programmed_run
 import logging
 
 logger = logging.getLogger()
@@ -12,5 +14,7 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-launch_all()
+while True:
+    programmed_run(launch_all)
+    time.sleep(2*3600)
 

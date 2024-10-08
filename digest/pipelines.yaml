@@ -12,7 +12,7 @@ pipelines:
       filters:
         minSize: 30
         minPrice: 80000
-        maxPrice: 300000
+        maxPrice: 400000
         sinceDate: 'W'
       limit: 750
     store:

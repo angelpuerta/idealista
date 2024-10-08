@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
 
 from client.search.enum.operation import Operation
@@ -40,10 +40,10 @@ class Property:
     detailedType: DetailedType
     size: float
     url: str
-    status: Status
     propertyType: dict | str
     detailedType: dict
     suggestedTexts: dict
+    status: Status = field(default_factory=lambda: Status.UNKNOWN)  
     showAddress: bool = False
     newDevelopment: bool = False
     hasPlan: bool = False

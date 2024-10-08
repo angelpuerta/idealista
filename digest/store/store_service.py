@@ -53,6 +53,7 @@ class StoreService:
             except StopIteration as e:
                 logging.warning(f"The limit for the query has been reached {e}")
             except Exception as e:
+                logging.error("There has been an error while parsing the properties")
                 logging.error(e)
 
     @property
