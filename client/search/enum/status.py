@@ -6,3 +6,4 @@ class Status(str, Enum):
     GOOD = "good"
     RENEW = "renew"
     NEW_DEVELOPMENT = "newdevelopment"
+    UNKNOWN = "unknown"
