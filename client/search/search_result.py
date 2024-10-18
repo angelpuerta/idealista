@@ -24,12 +24,10 @@ class Property:
     bathrooms: int
     country: str
     distance: str
-    district: str
     hasVideo: bool
     latitude: float
     longitude: float
     municipality: str
-    neighborhood: str
     numPhotos: int
     operation: Operation
     price: float
@@ -43,6 +41,8 @@ class Property:
     propertyType: dict | str
     detailedType: dict
     suggestedTexts: dict
+    district: str = None
+    neighborhood: str = None
     status: Status = field(default_factory=lambda: Status.UNKNOWN)  
     showAddress: bool = False
     newDevelopment: bool = False

@@ -29,6 +29,7 @@ def launch_all():
             launch_pipeline(pipeline)
         except Exception as e:
             logging.error(e)
+            logging.error(f'Pipeline {pipeline.name} failed')
             return
     logging.info(f'Pipelines completed')
 
