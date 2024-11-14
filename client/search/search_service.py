@@ -35,7 +35,9 @@ class SearchService:
             return page
         if response.status_code == 429:
             return ExceededRequest()
-        error = SearchError(response.status_code, response.json()['message'])
+        logging.error(f"For the following search request we had the code {response.status_code}")
+        logging.error(search_request)
+        error = SearchError(response.status_code, response.json())
         logging.error(error)
         return error
 
