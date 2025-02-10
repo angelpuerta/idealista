@@ -15,6 +15,11 @@ pipelines:
         maxPrice: 400000
         sinceDate: 'W'
       limit: 750
+    models:
+      - name: 'sales_model.pkl'
+        output: 'y_pred'
+      - name: 'rents_model.pkl'
+        output: 'predicted_rent'
     store:
       type: "tsv"
       output: "../output/sales"
@@ -35,9 +40,13 @@ pipelines:
         maxPrice: 2000
         sinceDate: 'W'
       limit: 750
+    models:
+      - name: 'rents_model.pkl'
+        output: 'y_pred'
     store:
       type: "tsv"
       output: "../output/rents"
+
   - name: "Join_sales_csv"
     run:
       function: "join_csv"

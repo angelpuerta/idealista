@@ -16,12 +16,13 @@ from digest.pipeline.pipeline import Pipeline
 from digest.run.command import Command
 from digest.store.store import Store
 from digest.store.store_type import StoreType
+from model.models import Model
 
 
 
 def map_pipeline(yaml_definition: dict) -> Pipeline:
     name = yaml_definition['name']
-    search, store, run, query, geo_query = None, None, None, None, None
+    search, store, run, query, geo_query, models = None, None, None, None, None, None
     limit = 0
     filters = {}
     if 'search' in yaml_definition:
@@ -34,6 +35,8 @@ def map_pipeline(yaml_definition: dict) -> Pipeline:
         store = yaml_definition['store']
     if 'run' in yaml_definition:
         run = yaml_definition['run']
+    if 'models' in yaml_definition:
+        models = yaml_definition['models']
 
     if geo_query and 'city' in geo_query:
         geo_query = from_city(geo_query['city'], geo_query['distance'])
@@ -58,7 +61,8 @@ def map_pipeline(yaml_definition: dict) -> Pipeline:
                          'filters': filters,
                          'store': store,
                          'limit': limit,
-                         'run': run
+                         'run': run,
+                         'models': models
                      })
 
 
