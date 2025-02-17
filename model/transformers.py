@@ -1,9 +1,8 @@
 from datetime import datetime
-import re
-import numpy as np
-import pandas as pd
 from sklearn.base import BaseEstimator, TransformerMixin
-
+import re
+import pandas as  pd
+import numpy as np
 
 class StatusValues(BaseEstimator, TransformerMixin):
     def __init__(self):
@@ -23,7 +22,7 @@ class StatusValues(BaseEstimator, TransformerMixin):
     
     def transform(self, X):
         if isinstance(X, pd.DataFrame):
-            return X.replace(self.mapping).infer_objects(copy=False)
+            return X.replace(self.mapping)
         else:
             raise ValueError("Input should be a pandas DataFrame.")
     
@@ -61,10 +60,14 @@ class MapFloorValues(BaseEstimator, TransformerMixin):
         return X.map(self._map_values)
 
 class BasicTransformer(TransformerMixin, BaseEstimator):
+    def __init__(self, training=False):
+        super().__init__()
+        self.training = training
+
     def fit(self, X, y=None):
         return self
 
-    def transform(self, X):
+    def transform(self, X, y=None):
         X = X.copy()
         X = self._transform_hasLift(X)
         X = self._transformed_floor(X)
@@ -77,11 +80,14 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
         X = self._add_animal(X)
         X = self._date_to_unix(X)
         X = self._add_bare_title(X)
-        X = X.drop( X.index[X['bare_tittle'] == 1].tolist(), axis=0)
         X = self._remove_terms(X, ['okupada', 'subasta', 'ocup'])
-        X = X.drop( X.index[X['remove_by_term'] == 1].tolist(), axis=0)    
-        X = X.drop(X.index[X['isBassement'] == 1].tolist())
-    
+
+        if not self.training:
+            drop_indices = set(
+            X.index[X['bare_tittle'] == 1].tolist() + 
+            X.index[X['remove_by_term'] == 1].tolist() 
+            )
+            X = X.drop(index=drop_indices)
         return X
 
     def _transform_hasLift(self, df):
@@ -132,3 +138,10 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
     def _date_to_unix(self, df):
         df['created'] = df['created'].map(lambda x: datetime.strptime(x, "%Y-%m-%d %H:%M:%S.%f").timestamp())
         return df
+
+def remove_index(X, y):
+    drop_indices = set(
+            X.index[X['bare_tittle'] == 1].tolist() + 
+            X.index[X['remove_by_term'] == 1].tolist()
+        )
+    return X.drop(index=drop_indices), y.drop(index=drop_indices)

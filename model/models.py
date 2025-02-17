@@ -1,44 +1,18 @@
 from dataclasses import dataclass
 import os
-import numpy as np
-from sklearn import clone
-from sklearn.compose import ColumnTransformer
 import joblib
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OrdinalEncoder
 import logging
 import pandas
 
-from model.transformers import BasicTransformer, MapFloorValues, StatusValues
+from model.transformers import BasicTransformer, StatusValues, MapFloorValues
 
-categorical_features = ['district', 'neighborhood', 'propertyType']
-binary_features = ['newDevelopment', 'exterior', 'hasLift', 'garage', 'storage_room']
-numerical_features = ['bathrooms', 'size', 'rooms']
-
-
-preprocessor = ColumnTransformer(
-    transformers=[
-        ('bin', 'passthrough', binary_features),  # Keep numerical features as they are
-        ('num', 'passthrough', numerical_features),
-        ('status', StatusValues(), ['status']),
-        ('floor', MapFloorValues(), ['floor']),
-        ('cat', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=np.nan), categorical_features)  # One-hot encode categorical features
-    ]
-)
-
-pipeline = Pipeline(
-        steps=[
-        ('basic_transformation', BasicTransformer()),
-        ('preprocessor', preprocessor),
-        ]
-    )
 
 @dataclass
 class Model:
     name: str
     output: str
 
-def _load_regressor(path):
+def _load_pipeline(path):
     if not os.path.exists(path):
         logging.error(f"The path {path} does not exist")
         return
@@ -48,12 +22,13 @@ def _load_regressor(path):
 def evaluate_model(dataframe, model):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     path = os.path.join(current_dir, model.name)
-    model_pipeline = clone(pipeline)
-    model_pipeline.fit(dataframe)
-    model_pipeline.steps.append(('regressor', _load_regressor(path)))
+    pipeline = _load_pipeline(path)
 
-    predictions = model_pipeline.predict(dataframe) 
-    dataframe[model.output] = predictions
+    dataframe_transformed = BasicTransformer().fit_transform(dataframe)
+    predictions = pipeline.predict(dataframe_transformed)
+    predictions_full = pandas.Series(pandas.NA, index=dataframe.index)
+    predictions_full[dataframe_transformed.index] = predictions.reshape(-1, 1).flatten()
+    dataframe[model.output] = predictions_full
     return dataframe
 
 def evaluate_models(list, models):
@@ -61,3 +36,9 @@ def evaluate_models(list, models):
     for model in models:
         evaluate_model(dataframe, model)
     return iter(dataframe.to_dict(orient="records"))
+
+if __name__ == "__main__":
+    df = pandas.read_csv("output/sales/output.csv", sep='\t')
+    data = evaluate_models(df, [Model("sales_model.pkl", "y_pred"), Model("rents_model.pkl", "pred_rents")])
+    data = pandas.DataFrame(data)
+    data.to_csv("test_model.csv")
