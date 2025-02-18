@@ -22,7 +22,7 @@ class StatusValues(BaseEstimator, TransformerMixin):
     
     def transform(self, X):
         if isinstance(X, pd.DataFrame):
-            return X.replace(self.mapping)
+            return X.replace(self.mapping).infer_objects(copy=False)
         else:
             raise ValueError("Input should be a pandas DataFrame.")
     
@@ -69,6 +69,7 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
 
     def transform(self, X, y=None):
         X = X.copy()
+        X = self._transform_binaries(X)
         X = self._transform_hasLift(X)
         X = self._transformed_floor(X)
         X = self._add_is_bassement(X)
@@ -89,6 +90,13 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
             )
             X = X.drop(index=drop_indices)
         return X
+
+    def _transform_binaries(self, df):
+        for col in df.columns:
+            if df[col].dtype == 'object' and df[col].isin(['True', 'False']).all():
+                df[col] = df[col].map({'True': 1, 'False': 0})
+        return df
+
 
     def _transform_hasLift(self, df):
         df.loc[((df['propertyType'].isin(['flat', 'penthouse', 'studio'])) & df['hasLift'].isna()), 'hasLift'] = False

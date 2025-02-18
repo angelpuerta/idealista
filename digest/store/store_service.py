@@ -11,6 +11,7 @@ from client.search.search_result import Property
 from digest.pipeline.pipeline import Pipeline
 from digest.store.store_type import StoreType
 from utils.decorator import singleton
+from more_itertools import peekable
 
 def purge_strings(dictionary):
     for key, value in dictionary.items():
@@ -35,9 +36,12 @@ class StoreService:
         store = pipeline.store
         return self.load_functions[store.type](path)
 
+    def model_output_fields(self, pipeline: Pipeline):
+       return [model.output for model in pipeline.models]
+
     def store_tsv(self, pipeline:Pipeline, iterator: Iterator):
         logging.info(f"Storing the pipeline {pipeline.name}")
-        properties_fields = list(map(lambda x: x.name, fields(Property))) + ['created']
+        properties_fields = list(map(lambda x: x.name, fields(Property))) + ['created'] + self.model_output_fields(pipeline)
         path = self.path.joinpath(pipeline.store.output)
 
         if not os.path.exists(path):
@@ -50,7 +54,10 @@ class StoreService:
 
             try:
                 for state in iterator:
-                    state = purge_strings(state.__dict__)
+                    if hasattr(state, "__dict__"):
+                        state = purge_strings(state.__dict__)
+                    else:
+                        state = purge_strings(state)
                     writer.writerow(state | {'created': datetime.now()})
                 logging.info(f"Store complete for {pipeline.name}")
             except StopIteration as e:

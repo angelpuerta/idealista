@@ -35,7 +35,7 @@ def evaluate_models(list, models):
     dataframe = pandas.DataFrame(list)
     for model in models:
         evaluate_model(dataframe, model)
-    return iter(dataframe.to_dict(orient="records"))
+    return dataframe.to_dict(orient="records")
 
 if __name__ == "__main__":
     df = pandas.read_csv("output/sales/output.csv", sep='\t')
