@@ -11,7 +11,6 @@ from client.search.search_result import Property
 from digest.pipeline.pipeline import Pipeline
 from digest.store.store_type import StoreType
 from utils.decorator import singleton
-from more_itertools import peekable
 
 def purge_strings(dictionary):
     for key, value in dictionary.items():
@@ -37,6 +36,8 @@ class StoreService:
         return self.load_functions[store.type](path)
 
     def model_output_fields(self, pipeline: Pipeline):
+       if not pipeline.models:
+           return []
        return [model.output for model in pipeline.models]
 
     def store_tsv(self, pipeline:Pipeline, iterator: Iterator):
