@@ -6,6 +6,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Iterator
 
+import pandas
+
 
 from client.search.search_result import Property
 from digest.pipeline.pipeline import Pipeline
@@ -69,9 +71,7 @@ class StoreService:
         return path
     
     def load_tsv(self, file_path):
-        with open(file_path, mode='r', encoding='utf-8') as file:
-            reader = csv.DictReader(file, delimiter='\t')
-            return [row for row in reader]
+        return pandas.read_csv(file_path, sep='\t')
         
     @property
     def store_functions(self):

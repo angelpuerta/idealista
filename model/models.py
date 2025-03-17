@@ -31,8 +31,7 @@ def evaluate_model(dataframe, model):
     dataframe[model.output] = predictions_full
     return dataframe
 
-def evaluate_models(list, models):
-    dataframe = pandas.DataFrame(list)
+def evaluate_models(dataframe: pandas.DataFrame, models):
     for model in models:
         evaluate_model(dataframe, model)
     return dataframe.to_dict(orient="records")

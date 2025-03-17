@@ -103,7 +103,7 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
         return df
 
     def _transformed_floor(self, df):
-        df.loc[((df['propertyType'].isin(['flat', 'penthouse', 'studio'])) & df['floor'].isna()), 'floor'] = '-1'
+        df.loc[((df['propertyType'].isin(['flat', 'studio'])) & df['floor'].isna()), 'floor'] = '-1'
         return df
 
     def _add_bare_title(self, df):

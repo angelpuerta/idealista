@@ -14,7 +14,12 @@ pipelines:
         minPrice: 80000
         maxPrice: 400000
         sinceDate: 'W'
-      limit: 750
+      limit: 50
+    models:
+      - name: 'sales_model.pkl'
+        output: 'y_pred'
+      - name: 'rents_model.pkl'
+        output: 'predicted_rent'
     store:
       type: "tsv"
       output: "../output/sales"
@@ -34,7 +39,10 @@ pipelines:
         minPrice: 400
         maxPrice: 2000
         sinceDate: 'W'
-      limit: 750
+      limit: 50
+    models:
+        - name: 'rents_model.pkl'
+          output: 'predicted_rent'
     store:
       type: "tsv"
       output: "../output/rents"
