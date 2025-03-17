@@ -77,6 +77,7 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
         X = self._add_storage_room(X)
         X = self._add_suite_bathroom(X)
         X = self._add_janitor(X)
+        X = self._add_mansard(X)
         X = self._add_pool(X)
         X = self._add_animal(X)
         X = self._date_to_unix(X)
@@ -109,6 +110,11 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
     def _add_bare_title(self, df):
         df['bare_tittle'] = df['description'].fillna('').str.contains('nuda', case=False).astype(int)
         return df
+    
+    def _add_mansard(self, df):
+        df['mansard'] = df['description'].fillna('').str.contains('buhardilla', case=False).astype(int)
+        return df
+
 
     def _add_garage(self, df):
         df['garage'] = df['description'].fillna('').str.contains('garaje', case=False).astype(int)
