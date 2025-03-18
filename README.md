@@ -101,3 +101,14 @@ This project (`data.twb`) uses **Tableau Desktop Professional Edition 2019.4.3**
 ### Download Link for Tableau Desktop 2019.4.3
 
 To download Tableau Desktop Professional Edition 2019.4.3, you can use the following [magnet link](https://tinyurl.com/2en3knzn): 
+
+### You may run it on local
+
+Doing the following you may run it on local
+
+```
+docker volume create idealista
+
+docker build -t idealista-bot:latest .
+docker run --restart unless-stopped  -v idealista:/idealista/output -d idealista-bot:latest
+```
