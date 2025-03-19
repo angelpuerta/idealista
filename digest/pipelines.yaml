@@ -14,7 +14,7 @@ pipelines:
         minPrice: 80000
         maxPrice: 400000
         sinceDate: 'W'
-      limit: 750
+      limit: 50
     models:
       - name: 'sales_model.pkl'
         output: 'y_pred'
@@ -39,7 +39,7 @@ pipelines:
         minPrice: 400
         maxPrice: 2000
         sinceDate: 'W'
-      limit: 750
+      limit: 50
     models:
         - name: 'rents_model.pkl'
           output: 'predicted_rent'
@@ -63,3 +63,13 @@ pipelines:
     run:
       function: "store_drive"
       arg: "../output/rents/output.csv 1nyrAN4KZW73MSzj8eev3hDgE0KVkVHt7"
+  - name: "send_telegram_notification"
+    run:
+      function: "send_telegram_notification"
+      arg: | 
+        Hemos actualizado la tabla de inmuebles 🐋 
+        ############################
+        Puedes mirar el enlace para alquileres 🔑: https://docs.google.com/spreadsheets/d/1FmdB_RnVX-sibai32bHg-DVTLtMmBHBsbobxBIHqNQ4/edit?usp=sharing
+        ############################
+        Puedes mirar el enlace para ventas 🏠: https://docs.google.com/spreadsheets/d/1SoAkDnF92fTOQgUjjb7dgtQ5Asvmy6WvJrt9G37K2mo/edit?usp=drive_link 
+        ############################

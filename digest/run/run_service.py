@@ -5,6 +5,7 @@ import pandas as pd
 
 import logging
 from digest.pipeline.pipeline import Pipeline
+from digest.run.send_telegram import send_telegram_notification
 from digest.run.store_drive import store_drive
 from utils.decorator import singleton
 
@@ -42,11 +43,18 @@ class RunService:
         store_drive(from_path, to_path)
         logging.info(f"Completed store drive for {args}")
 
+    def send_telegram_notification(self, args: str):
+        logging.info(f"Running send telegram annotation with message {args}")
+        response  = send_telegram_notification(args)
+        logging.info(response)
+        logging.info(f"Completed telegram annotation with message {args}")
+
     @property
     def run_functions(self):
         return {
             "join_csv": self.join_csv,
-            "store_drive": self.store_drive
+            "store_drive": self.store_drive,
+            "send_telegram_notification": self.send_telegram_notification
         }
 
 
