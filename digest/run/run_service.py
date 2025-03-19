@@ -30,6 +30,7 @@ class RunService:
 
         grouped_data = concatenated_data.loc[concatenated_data.groupby('propertyCode')['created'].idxmax()]
         deduplicated_data = grouped_data.drop_duplicates(subset=["propertyCode"], keep="first")
+        deduplicated_data = deduplicated_data.sort_values("created", ascending=False)
 
         output_file_path = os.path.join(path, "output.csv")
         deduplicated_data.to_csv(output_file_path, sep='\t', mode='w+', index=False)
