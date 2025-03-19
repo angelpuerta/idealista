@@ -28,7 +28,7 @@ class RunService:
                 data = pd.read_csv(file_path, sep='\t')
                 concatenated_data = pd.concat([concatenated_data, data])
 
-        grouped_data = concatenated_data.loc[concatenated_data.groupby('propertyCode')['created'].idxmax()]
+        grouped_data = concatenated_data.loc[concatenated_data.groupby('propertyCode')['created'].idxmin()]
         deduplicated_data = grouped_data.drop_duplicates(subset=["propertyCode"], keep="first")
         deduplicated_data = deduplicated_data.sort_values("created", ascending=False)
 
