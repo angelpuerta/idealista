@@ -28,10 +28,12 @@ class RunService:
                 data = pd.read_csv(file_path, sep='\t')
                 concatenated_data = pd.concat([concatenated_data, data])
 
-        grouped_data = concatenated_data.sort_values("created", ascending=False).groupby('propertyCode').tail(1)
-        deduplicated_data = grouped_data.drop_duplicates(subset="propertyCode", inplace=False)
+        grouped_data = concatenated_data.loc[concatenated_data.groupby('propertyCode')['created'].idxmax()]
+        deduplicated_data = grouped_data.drop_duplicates(subset=["propertyCode"], keep="first")
+
         output_file_path = os.path.join(path, "output.csv")
         deduplicated_data.to_csv(output_file_path, sep='\t', mode='w+', index=False)
+
         logging.info(f"Completed join csv for {path}")
 
     def store_drive(self, args: str):
