@@ -33,6 +33,7 @@ def evaluate_model(dataframe, model):
 
 def evaluate_models(dataframe: pandas.DataFrame, models):
     for model in models:
+        logging.debug(f"Evaluating model {model.name}")
         evaluate_model(dataframe, model)
     return dataframe.to_dict(orient="records")
 

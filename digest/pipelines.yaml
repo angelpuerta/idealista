@@ -13,7 +13,7 @@ pipelines:
         minSize: 30
         minPrice: 80000
         maxPrice: 400000
-        sinceDate: 'W'
+        sinceDate: 'Y'
       limit: 750
     models:
       - name: 'sales_model.pkl'
@@ -38,7 +38,7 @@ pipelines:
         minSize: 30
         minPrice: 400
         maxPrice: 2000
-        sinceDate: 'W'
+        sinceDate: 'T'
       limit: 750
     models:
         - name: 'rents_model.pkl'

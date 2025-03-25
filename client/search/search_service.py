@@ -17,7 +17,6 @@ from utils.decorator import singleton
 @singleton
 class SearchService:
     uri = config.idealista_url
-    token = authenticationSession.token
 
     def query_page(self, search_request: SearchRequest) -> SearchPage:
         return self._get_page(search_request)
@@ -28,6 +27,16 @@ class SearchService:
     def _get_page(self, search_request: SearchRequest) -> SearchPage | SearchError | ExceededRequest:
         country_url = f'{self.uri}/{search_request.country}/search'
         logging.debug(search_request)
+        response = self._search_page(country_url, search_request)
+        if isinstance(response, ExceededRequest):
+            logging.debug(f"The number of requests have exceeded the token")
+            config.next_credentails()
+            authenticationSession.expire_token()
+            return self._search_page(country_url, search_request)
+        return response
+
+    
+    def _search_page(self, country_url, search_request)-> SearchPage | SearchError | ExceededRequest:
         response = requests.post(country_url, headers=self._auth_header(), params=search_request.params)
         if response.status_code == 200:
             page = SearchPage(**response.json())
@@ -42,7 +51,7 @@ class SearchService:
         return error
 
     def _auth_header(self):
-        return {'Authorization': f'Bearer {self.token}'}
+        return {'Authorization': f'Bearer {authenticationSession.token}'}
 
 
 search_service = SearchService()
