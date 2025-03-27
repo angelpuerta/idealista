@@ -82,7 +82,8 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
         X = self._add_animal(X)
         X = self._date_to_unix(X)
         X = self._add_bare_title(X)
-        X = self._remove_terms(X, ['okupada', 'subasta', 'ocup'])
+        X = self._remove_terms(X, ['okupad', 'subasta', 'ocup'])
+        X = self._remove_terms(X, ['renta antigua'])
 
         if not self.training:
             drop_indices = set(
