@@ -38,14 +38,14 @@ class AuthenticationSession:
 
     def is_expired(self) -> bool:
         try:
-            jwt.decode(self._token, config.secret, algorithms=["HS256"], options={"verify_exp": True})
+            jwt.decode(self._token, config.secret, algorithms=["HS256"], options={"verify_exp": True, "verify_signature": False})
         except jwt.ExpiredSignatureError:
             return True
         return False
 
     @property
     def token(self) -> str:
-        if not self._token or self.is_expired(self._token):
+        if not self._token or self.is_expired():
             self._token = self.service.download_token().access_token
         return self._token
 
