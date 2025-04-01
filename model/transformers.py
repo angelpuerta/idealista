@@ -82,8 +82,7 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
         X = self._add_animal(X)
         X = self._date_to_unix(X)
         X = self._add_bare_title(X)
-        X = self._remove_terms(X, ['okupad', 'subasta', 'ocup'])
-        X = self._remove_terms(X, ['renta antigua'])
+        X = self._remove_terms(X, ['okupad', 'subasta', 'ocup', 'renta antigua'])
 
         if not self.training:
             drop_indices = set(
@@ -143,7 +142,7 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
 
     def _remove_terms(self, df, terms):
         pattern = '|'.join(map(re.escape, terms))
-        df['remove_by_term'] = df['description'].str.contains(pattern, case=False, na=False)
+        df['remove_by_term'] = df['description'].str.contains(pattern, case=False, na=False).astype(int)
         return df
 
     def _add_is_bassement(self, df):

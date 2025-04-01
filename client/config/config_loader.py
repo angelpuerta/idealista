@@ -29,7 +29,7 @@ class Config:
             self.idealista_url = f'{self.idealista_base_url}/{version}'
 
     def next_credentails(self):
-        if (self.credentials_index >= len(self.credentials)):
+        if (self.credentials_index + 1 >= len(self.credentials)):
             self.credentials_index = 0
         else:
             self.credentials_index = self.credentials_index+ 1

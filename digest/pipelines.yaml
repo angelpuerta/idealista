@@ -14,7 +14,7 @@ pipelines:
         minPrice: 80000
         maxPrice: 400000
         sinceDate: 'Y'
-      limit: 750
+      limit: 500
     models:
       - name: 'sales_model.pkl'
         output: 'y_pred'
@@ -39,7 +39,7 @@ pipelines:
         minPrice: 400
         maxPrice: 2000
         sinceDate: 'T'
-      limit: 750
+      limit: 500
     models:
         - name: 'rents_model.pkl'
           output: 'predicted_rent'
