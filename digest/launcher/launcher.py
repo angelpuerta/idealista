@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from digest.pipeline.pipeline_reader import pipelines
 from digest.run.run_service import run_service
@@ -33,6 +34,7 @@ def launch_all():
             launch_pipeline(pipeline)
         except Exception as e:
             logging.error(e)
+            logging.error(traceback.format_exc())
             logging.error(f'Pipeline {pipeline.name} failed')
             return
     logging.info(f'Pipelines completed')
