@@ -33,11 +33,24 @@ class MapFloorValues(BaseEstimator, TransformerMixin):
     def get_feature_names_out(self, input_features=None):
         return input_features
     
+    def can_convert_to_int_float(self, x):
+        try:
+            int(float(x.strip()))  
+            return True
+        except (ValueError, TypeError, AttributeError):
+            return False
+    
     def _map_values(self, x):
         if isinstance(x, str) and x.isdigit():
             return int(x) 
+        if self.can_convert_to_int_float(x):
+            return int(float(x))
         if pd.isna(x):
             return np.nan
+        if isinstance(x, float):
+            return int(x)
+        if isinstance(x, int):
+            return x
         match x: 
             case 'bj':
                 return -1
@@ -54,7 +67,8 @@ class MapFloorValues(BaseEstimator, TransformerMixin):
             case '':
                 return 0
             case _:
-                assert False, f"The value {x} of type {type(x)} does not comply"
+                print(x)
+                return -1
 
     def transform(self, X):
         return X.map(self._map_values)
@@ -108,41 +122,41 @@ class BasicTransformer(TransformerMixin, BaseEstimator):
         return df
 
     def _add_bare_title(self, df):
-        df['bare_tittle'] = df['description'].fillna('').str.contains('nuda', case=False).astype(int)
+        df['bare_tittle'] = df['description'].fillna('').astype(str).str.contains('nuda', case=False).astype(int)
         return df
     
     def _add_mansard(self, df):
-        df['mansard'] = df['description'].fillna('').str.contains('buhardilla', case=False).astype(int)
+        df['mansard'] = df['description'].fillna('').astype(str).str.contains('buhardilla', case=False).astype(int)
         return df
 
 
     def _add_garage(self, df):
-        df['garage'] = df['description'].fillna('').str.contains('garaje', case=False).astype(int)
+        df['garage'] = df['description'].fillna('').astype(str).str.contains('garaje', case=False).astype(int)
         return df
 
     def _add_storage_room(self, df):
-        df['storage_room'] = df['description'].fillna('').str.contains('trastero', case=False).astype(int)
+        df['storage_room'] = df['description'].fillna('').astype(str).str.contains('trastero', case=False).astype(int)
         return df
 
     def _add_suite_bathroom(self, df):
-        df['suite_bath'] = df['description'].fillna('').str.contains('suite', case=False).astype(int)
+        df['suite_bath'] = df['description'].fillna('').astype(str).str.contains('suite', case=False).astype(int)
         return df
 
     def _add_janitor(self, df):
-        df['janitor'] = df['description'].fillna('').str.contains('portero', case=False).astype(int)
+        df['janitor'] = df['description'].fillna('').astype(str).str.contains('portero', case=False).astype(int)
         return df
 
     def _add_pool(self, df):
-        df['pool'] = df['description'].fillna('').str.contains('piscina', case=False).astype(int)
+        df['pool'] = df['description'].fillna('').astype(str).str.contains('piscina', case=False).astype(int)
         return df
 
     def _add_animal(self, df):
-        df['animal'] = df['description'].fillna('').str.contains('animal', case=False).astype(int)
+        df['animal'] = df['description'].fillna('').astype(str).str.contains('animal', case=False).astype(int)
         return df
 
     def _remove_terms(self, df, terms):
         pattern = '|'.join(map(re.escape, terms))
-        df['remove_by_term'] = df['description'].str.contains(pattern, case=False, na=False).astype(int)
+        df['remove_by_term'] = df['description'].astype(str).str.contains(pattern, case=False, na=False).astype(int)
         return df
 
     def _add_is_bassement(self, df):

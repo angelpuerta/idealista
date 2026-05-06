@@ -61,6 +61,7 @@ class StoreService:
                         state = purge_strings(state.__dict__)
                     else:
                         state = purge_strings(state)
+                    logging.debug("Property added")
                     writer.writerow(state | {'created': datetime.now()})
                 logging.info(f"Store complete for {pipeline.name}")
             except StopIteration as e:

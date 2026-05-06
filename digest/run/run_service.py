@@ -25,13 +25,32 @@ class RunService:
         for file_name in os.listdir(path):
             if file_name.endswith(".tsv"):
                 file_path = os.path.join(path, file_name)
-                data = pd.read_csv(file_path, sep='\t')
-                concatenated_data = pd.concat([concatenated_data, data])
+                
+                try:
+                    # Attempt to read the file
+                    data = pd.read_csv(file_path, sep='\t')
+                    
+                    if not data.empty:
+                        concatenated_data = pd.concat([concatenated_data, data])
+                        
+                except pd.errors.EmptyDataError:
+                    # Catch the specific error and skip the file
+                    logging.warning(f"File {file_name} is empty or has no columns. Skipping.")
+                    continue
+                except Exception as e:
+                    # Catch other unexpected errors (like file permission issues)
+                    logging.error(f"Error reading {file_name}: {e}")
+                    continue
 
-        concatenated_data=  concatenated_data.sort_values("created", ascending=False)
+        # Check if we actually collected any data before trying to sort/group
+        if concatenated_data.empty:
+            logging.error(f"No valid data found in any .tsv files at {path}")
+            return
+
+        concatenated_data = concatenated_data.sort_values("created", ascending=False)
         grouped_data = concatenated_data.loc[concatenated_data.groupby('propertyCode')['created'].idxmin()]
         deduplicated_data = grouped_data.drop_duplicates(subset=["propertyCode"], keep="first")
-        deduplicated_data=  deduplicated_data.sort_values("created", ascending=False)
+        deduplicated_data = deduplicated_data.sort_values("created", ascending=False)
 
         output_file_path = os.path.join(path, "output.csv")
         deduplicated_data.to_csv(output_file_path, sep='\t', mode='w+', index=False)

@@ -38,6 +38,10 @@ def programmed_run(program):
 
     # Get the current date
     current_date = datetime.now()
+    logging.debug(f"Now is {datetime}")
+    if datetime.now().hour < 8:
+        logging.info(f"No need to run the program at this hour")
+        return
 
     if last_run is None or (current_date - last_run).days >= config.periodicity:
         # If periodicity has passed or if no last run date, run the program

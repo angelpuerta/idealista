@@ -2,6 +2,9 @@ from typing import Iterator, Callable
 
 import dacite
 
+import logging
+
+from client.authentication.authentication_service import authenticationSession
 from client.search.enum.operation import Operation
 from client.search.enum.property_type import PropertyType
 from client.search.enum.status import Status
@@ -30,17 +33,24 @@ class PropertyIter:
         return self
 
     def __next__(self):
+        if self._limit is not None and self._count >= self._limit:
+            raise StopIteration
+
         next_property = next(self._propertyIterator, None)
-        if self._limit_reached():
-            raise StopIteration
-        if not next_property and not self.is_next_page():
-            raise StopIteration
-        if not next_property and self.is_next_page():
+
+        # If current page is exhausted, try to get the next page
+        while next_property is None and self.is_next_page():
+            logging.info("Retrieving next page")
             self.next_page()
             next_property = next(self._propertyIterator, None)
-        if not next_property:
-            raise ValueError("Impossible path has been reached")
-        self._count = self._count + 1
+
+        # If still None, we are truly done
+        if next_property is None:
+            authenticationSession.expire_token()
+            logging.info("Stopping retrieve - no more properties found")
+            raise StopIteration
+
+        self._count += 1
         return dacite.from_dict(data_class=Property, data=next_property,
                                 config=dacite.Config(
                                     type_hooks={Operation: Operation, DetailedType: DetailedType, Status: Status,

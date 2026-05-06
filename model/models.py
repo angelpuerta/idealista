@@ -23,8 +23,9 @@ def evaluate_model(dataframe, model):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     path = os.path.join(current_dir, model.name)
     pipeline = _load_pipeline(path)
-
+    logging.info(f"Transform dataframe of size {dataframe.shape}")
     dataframe_transformed = BasicTransformer().fit_transform(dataframe)
+    logging.info(f"Predicting dataframe of size {dataframe_transformed.shape}")
     predictions = pipeline.predict(dataframe_transformed)
     predictions_full = pandas.Series(pandas.NA, index=dataframe.index)
     predictions_full[dataframe_transformed.index] = predictions.reshape(-1, 1).flatten()
@@ -33,7 +34,7 @@ def evaluate_model(dataframe, model):
 
 def evaluate_models(dataframe: pandas.DataFrame, models):
     for model in models:
-        logging.debug(f"Evaluating model {model.name}")
+        logging.info(f"Evaluating model {model.name}")
         evaluate_model(dataframe, model)
     return dataframe.to_dict(orient="records")
 

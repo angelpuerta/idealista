@@ -34,6 +34,6 @@ if args.run_once:
 
 while True:
     programmed_run(launch_all)
-    time.sleep(3600)
+    time.sleep(1200)
 
 

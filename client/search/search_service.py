@@ -29,7 +29,7 @@ class SearchService:
         logging.debug(search_request)
         response = self._search_page(country_url, search_request)
         if isinstance(response, ExceededRequest):
-            logging.debug(f"The number of requests have exceeded the token")
+            logging.warning(f"The number of requests have exceeded the token")
             config.next_credentails()
             authenticationSession.expire_token()
             return self._search_page(country_url, search_request)

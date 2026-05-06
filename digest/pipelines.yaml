@@ -1,4 +1,25 @@
-pipelines:
+pipelines:  
+
+  - name: "Export_sales_Oviedo_to_csv"
+    search:
+      query:
+        country: 'es'
+        operation: 'sale'
+        propertyType: 'homes'
+        locale: 'es'
+      geoQuery:
+        city: 'Oviedo'
+        distance: 4000
+      filters:
+        minSize: 60
+        minPrice: 80000
+        maxPrice: 260000
+        sinceDate: 'Y'
+      limit: 500
+    store:
+      type: "tsv"
+      output: "../output_oviedo/sales"
+
   - name: "Export_sales_to_csv"
     search:
       query:
@@ -8,7 +29,7 @@ pipelines:
         locale: 'es'
       geoQuery:
         city: 'Madrid'
-        distance: 7500
+        distance: 13000
       filters:
         minSize: 30
         minPrice: 80000
@@ -33,11 +54,11 @@ pipelines:
         locale: 'es'
       geoQuery:
         city: 'Madrid'
-        distance: 7500
+        distance: 13000
       filters:
         minSize: 30
         minPrice: 400
-        maxPrice: 2000
+        maxPrice: 2500
         sinceDate: 'T'
       limit: 500
     models:

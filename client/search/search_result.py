@@ -78,3 +78,4 @@ class SearchPage():
     numPaginations: int
     alertName: str
     totalAppliedFilters: int
+    searchTitle: str
